@@ -1,6 +1,6 @@
 {
   "name": "genlate",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Create templates to any file type. Generate files from templates created",
   "main": "index.js",
   "directories": {

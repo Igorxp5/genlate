@@ -15,7 +15,7 @@ var genlate = function(){
 		file: '-f',
 		folder: '-d'
 	}
-	var extTemplateFile = '.itc';
+	var extTemplateFile = '.gen';
 
 	var settings = {
 		method: method.folder, // -d or -f
