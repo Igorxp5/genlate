@@ -1,0 +1,36 @@
+{
+  "name": "genlate",
+  "version": "1.0.0",
+  "description": "Create templates to any file type. Generate files from templates created",
+  "main": "index.js",
+  "directories": {
+    "example": "example"
+  },
+  "dependencies": {
+    "fs": "~0.0.2",
+    "path": "~0.4.9",
+    "fs-extra": "~0.12.0"
+  },
+  "devDependencies": {
+    "underscore": "^1.8.3",
+    "walk": "^2.3.9"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Igorxp5/genlate.git",
+    "bugs": "https://github.com/Igorxp5/genlate/issues"
+  },
+  "keywords": [
+    "generator",
+    "json.",
+    "template",
+    "creator",
+    "create",
+    "file"
+  ],
+  "author": "Igor Fernandes <rogixp5@gmail.com>",
+  "license": "ISC"
+}
