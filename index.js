@@ -86,7 +86,7 @@ var genlate = function(){
 
 	var initializate = function() {
 		settings = $._.extendOwn(settings, arguments[0]);
-		
+
 		for( var i in settings ) {
 			if( settings[i] === false )
 				errorHandler('Left the property: ' + i);
@@ -102,7 +102,11 @@ var genlate = function(){
 
 	var createContentFromTemplate = function(file) {
 
-		var file = $.path.resolve(settings.template, file);
+		if ( settings.method == '-d' )
+			var file = $.path.resolve(settings.template, file);
+		else
+			var file = $.path.resolve(settings.template);
+
 
 		var content = $.fs.readFileSync(file, 'utf-8');
 
@@ -128,13 +132,13 @@ var genlate = function(){
 
 	//Public Methods
 	this.generate = function() {
-		
+
 		if ( settings.method == method.file ) {
 			//Method File, output is filename
 			var content = createContentFromTemplate(settings.output);
 			$.fs.ensureFile(settings.output);
 			$.fs.writeFileSync(settings.output, content);
-		
+
 			return true;
 		}
 
@@ -148,7 +152,7 @@ var genlate = function(){
 			for (var i = 0; i < path.length; i++) {
 
 				var folder = ( $.path.basename(root) == $.path.basename(settings.template) ) ? $.path.resolve(settings.output, path[i].name) : $.path.resolve(settings.output, $.path.basename(root), path[i].name);
-				
+
 				$.fs.ensureDir(folder);
 			}
 		    next();
@@ -157,10 +161,10 @@ var genlate = function(){
 		//Creating Files
 		walker.on("file", function (root, fileStats, next) {
 			var fileTemplate = ( $.path.basename(root) == $.path.basename(settings.template) ) ? $.path.resolve(settings.template, fileStats.name) : $.path.resolve(settings.template, $.path.basename(root), fileStats.name);
-			
+
 			var fileOutput = ( $.path.basename(root) == $.path.basename(settings.template) ) ? $.path.resolve(settings.output, fileStats.name) : $.path.resolve(settings.output, $.path.basename(root), fileStats.name);
 				fileOutput = ( $.path.extname(fileOutput) == extTemplateFile ) ? fileOutput.substr(0, fileOutput.length -4) : fileOutput;
-				
+
 			if( $.path.extname(fileTemplate) == extTemplateFile ) {
 				var contentFile = createContentFromTemplate(fileTemplate);
 
@@ -168,7 +172,7 @@ var genlate = function(){
 			} else {
 				$.fs.copy(fileTemplate, fileOutput);
 			}
-			
+
 
 			next();
 		});
