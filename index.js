@@ -127,16 +127,18 @@ var genlate = function(){
 	}
 
 	var createOutputFolder = function() {
-		$.fs.ensureDir(settings.output);
+		$.fs.ensureDirSync(settings.output);
 	}
 
 	//Public Methods
-	this.generate = function() {
+	this.generate = function(callback) {
+
+		if( callback == undefined ) callback = function() {  };
 
 		if ( settings.method == method.file ) {
 			//Method File, output is filename
 			var content = createContentFromTemplate(settings.output);
-			$.fs.ensureFile(settings.output);
+			$.fs.ensureFileSync(settings.output);
 			$.fs.writeFileSync(settings.output, content);
 
 			return true;
@@ -151,18 +153,20 @@ var genlate = function(){
 		walker.on("directories", function (root, path, next) {
 			for (var i = 0; i < path.length; i++) {
 
-				var folder = ( $.path.basename(root) == $.path.basename(settings.template) ) ? $.path.resolve(settings.output, path[i].name) : $.path.resolve(settings.output, $.path.basename(root), path[i].name);
+				var folder = $.path.resolve(settings.output, $.path.relative(settings.template, root), path[i].name);
 
-				$.fs.ensureDir(folder);
+				$.fs.ensureDirSync(folder);
 			}
-		    next();
+
+		  next();
+
 		});
 
 		//Creating Files
 		walker.on("file", function (root, fileStats, next) {
-			var fileTemplate = ( $.path.basename(root) == $.path.basename(settings.template) ) ? $.path.resolve(settings.template, fileStats.name) : $.path.resolve(settings.template, $.path.basename(root), fileStats.name);
+			var fileTemplate = $.path.resolve(root, fileStats.name);
 
-			var fileOutput = ( $.path.basename(root) == $.path.basename(settings.template) ) ? $.path.resolve(settings.output, fileStats.name) : $.path.resolve(settings.output, $.path.basename(root), fileStats.name);
+			var fileOutput = $.path.resolve(settings.output, $.path.relative(settings.template, root), fileStats.name);
 				fileOutput = ( $.path.extname(fileOutput) == extTemplateFile ) ? fileOutput.substr(0, fileOutput.length -4) : fileOutput;
 
 			if( $.path.extname(fileTemplate) == extTemplateFile ) {
@@ -170,12 +174,14 @@ var genlate = function(){
 
 				$.fs.writeFileSync(fileOutput, contentFile);
 			} else {
-				$.fs.copy(fileTemplate, fileOutput);
+				$.fs.copySync(fileTemplate, fileOutput);
 			}
 
 
 			next();
 		});
+
+		walker.on("end", callback);
 
 	}
 
